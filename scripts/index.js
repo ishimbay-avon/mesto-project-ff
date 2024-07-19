@@ -11,6 +11,7 @@ function createCard(item, deleteCard) {
     .cloneNode(true);
 
   cardElement.querySelector(".card__image").src = item.link;
+  cardElement.querySelector(".card__image").alt = "Фотография " + item.name;
   cardElement.querySelector(".card__title").textContent = item.name;
   const cardDeleteButton = cardElement.querySelector(".card__delete-button");
 
