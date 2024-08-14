@@ -3,14 +3,14 @@ import "../pages/index.css";
 import {
   createCard,
   deleteCard,
-  likeCard,
-  viewCard,
+  likeCard
 } from "../components/card.js";
 import {
   openModal,
   closeModal,
   closeModalByOverlay,
 } from "../components/modal.js";
+
 
 // @todo: DOM узлы
 //список для карточек
@@ -45,11 +45,28 @@ const placeNameInput = newPlaceForm.querySelector(
 );
 //поле ссылка на фото
 const linkInput = newPlaceForm.querySelector(".popup__input_type_url");
+//ссылка на попап изображения
+const popupTypeImage = document.querySelector(".popup_type_image");
+const popupImage = popupTypeImage.querySelector(".popup__image");
+const popupCaption = popupTypeImage.querySelector(".popup__caption");
+
+
+// @todo: Функция отображения карточки
+const viewCard = function (cardImage) {
+  //откроем попап
+  openModal(popupTypeImage);
+  //заполним данными поля
+  popupImage.src = cardImage.src;
+  popupImage.alt = cardImage.alt;
+  popupCaption.textContent = cardImage.alt.slice(11);
+};
+
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach(function (item) {
   placesList.append(createCard(item, deleteCard, likeCard, viewCard));
 });
+
 
 // @todo: клик открытия окна редактирования профиля
 profileEditButton.addEventListener("click", function () {
@@ -61,6 +78,7 @@ profileEditButton.addEventListener("click", function () {
     profileDescription.textContent;
 });
 
+
 // @todo: клик открытия окна создания новой карточки
 profileAddButton.addEventListener("click", function () {
   //добавим стиль - видимый попап
@@ -69,17 +87,21 @@ profileAddButton.addEventListener("click", function () {
   newPlaceForm.reset();
 });
 
+
 // @todo: клик закрытия всех окон
 popupCloseButtons.forEach(function (btn) {
   //для каждой кнопки
   btn.addEventListener("click", function (item) {
+    const popup = item.target.closest(".popup");
     //добавим стиль - невидимый попап
-    closeModal(item);
+    closeModal(popup);
   });
 });
 
+
 // @todo: обработка нажатия по overlay
 document.addEventListener("click", closeModalByOverlay);
+
 
 // @todo: редактирование профиля
 function handleProfileFormSubmit(evt) {
@@ -88,21 +110,25 @@ function handleProfileFormSubmit(evt) {
   profileTitle.textContent = nameInput.value;
   profileDescription.textContent = descriptionInput.value;
   //закроем форму
-  closeModal(evt);
+  const popup = evt.target.closest(".popup");
+  closeModal(popup);
 }
 // @todo: обработка события submit формы редактирования профиля
 editProfileForm.addEventListener("submit", handleProfileFormSubmit);
 
+
 // @todo: добавление карточки
 function handlePlaceFormSubmit(evt) {
   evt.preventDefault();
+
 
   //создадим новый объект и добавим название и ссылку на фото
   const newCard = { name: placeNameInput.value, link: linkInput.value };
   //добавим в список новую карточку
   placesList.prepend(createCard(newCard, deleteCard, likeCard, viewCard));
   //закроем форму
-  closeModal(evt);
+  const popup = evt.target.closest(".popup");
+  closeModal(popup);
 }
 // @todo: обработка события submit формы добавления карточки
 newPlaceForm.addEventListener("submit", handlePlaceFormSubmit);

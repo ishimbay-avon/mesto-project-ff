@@ -1,14 +1,12 @@
 // @todo: Функция обработки нажатия клавиши
 function keyHandler(evt) {
   if (evt.key === "Escape") {
-    //найдем все окна
-    const popups = document.querySelectorAll(".popup");
-    //удалим стиль
-    popups.forEach(function (item) {
-      item.classList.remove("popup_is-opened");
-    });
-    //удалим событие
-    document.removeEventListener("keydown", keyHandler);
+    //найдем открытй попап
+    const popup = document.querySelector(".popup_is-opened");
+    if (popup) {
+      //popup.classList.remove("popup_is-opened");
+      closeModal(popup);
+    }
   }
 }
 // @todo: Функция открытия модального окна
@@ -21,13 +19,16 @@ export const openModal = function (popupType) {
 // @todo: Функция закрытия модального окна
 export const closeModal = function (popupType) {
   //найдем родителя
-  const popup = popupType.target.closest(".popup");
+  //const popup = popupType.target.closest(".popup");
   //удалим стиль видимый
-  popup.classList.remove("popup_is-opened");
+  popupType.classList.remove("popup_is-opened");
+  //удалим событие
+  document.removeEventListener("keydown", keyHandler);
 };
 // @todo: обработка нажатия по overlay
 export const closeModalByOverlay = function (e) {
   if (e.target.classList.contains("popup")) {
-    e.target.classList.remove("popup_is-opened");
+    closeModal(e.target);
+    //e.target.classList.remove("popup_is-opened");
   }
 };
