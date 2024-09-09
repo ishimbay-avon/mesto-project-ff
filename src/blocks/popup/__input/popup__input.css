@@ -20,3 +20,22 @@
     line-height: 15px;
   }
 }
+
+.form__input-error {
+  font-size: 12px;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 400;
+  color: red;
+  opacity: 0;
+  margin-top: 5px;
+  line-height: 14.52px;
+  transition: 0.3s;
+}
+
+
+.form__input_type_error {
+  border-bottom-color: red;
+}
+.form__input-error_active {
+  opacity: 1;
+}
