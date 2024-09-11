@@ -11,13 +11,13 @@ import {
   getUserInfo,
   saveUserInfo,
   addNewCard,
-  changeAvatar,
-  deleteMyCard,
+  changeAvatar  
 } from "../components/api.js";
 
 import { enableValidation,clearValidation } from "../components/validation.js";
 
 // @todo: DOM узлы
+
 //список для карточек
 const placesList = document.querySelector(".places__list");
 //попап редактирования аватара
@@ -69,6 +69,17 @@ const popupTypeImage = document.querySelector(".popup_type_image");
 const popupImage = popupTypeImage.querySelector(".popup__image");
 const popupCaption = popupTypeImage.querySelector(".popup__caption");
 
+
+const validationSettings={
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "button_inactive", 
+  inputErrorClass: "form__input_type_error",
+  errorClass: "form__input-error_active"
+};
+
+
 // @todo: Функция отображения карточки
 const viewCard = function (cardImage) {
   //откроем попап
@@ -84,14 +95,14 @@ const promises = [getUserInfo(), getCards()];
 
 // Передаём массив с промисами методу Promise.all
 Promise.all(promises)
-  .then((data) => {
-    profileImage.style.backgroundImage = `url(${data[0].avatar})`;
-    profileTitle.textContent = data[0].name;
-    profileDescription.textContent = data[0].about;
-    profileId = data[0]._id;
+  .then(([userData,cards]) => {
+    profileImage.style.backgroundImage = `url(${userData.avatar})`;
+    profileTitle.textContent = userData.name;
+    profileDescription.textContent = userData.about;
+    profileId = userData._id;
 
-    data[1].forEach(function (item) {    
-      placesList.append(createCard(item,data[0]._id, deleteCard, likeCard, viewCard));
+    cards.forEach(function (item) {    
+      placesList.append(createCard(item,userData._id, deleteCard, likeCard, viewCard));
     });
   })
   .catch((err) => {
@@ -103,11 +114,7 @@ profileEditButton.addEventListener("click", function () {
   //добавим стиль - видимый попап
   openModal(popupTypeEdit);
 
-  clearValidation(editProfileForm, {
-    element: ".popup__input",
-    inputErrorClass: "form__input_type_error",
-    errorClass: "form__input-error_active",
-  });
+  clearValidation(editProfileForm, validationSettings);
 
   //перенесем  селекторы заголовка и описания профиля в форму
   document.forms["edit-profile"].elements.name.value = profileTitle.textContent;
@@ -115,18 +122,14 @@ profileEditButton.addEventListener("click", function () {
     profileDescription.textContent;
 });
 
-// @todo: клик открытия окна редактирования профиля
+// @todo: клик открытия окна редактирования аватара
 profileImage.addEventListener("click", function () {
   //добавим стиль - видимый попап
   openModal(popupTypeEditAvatar);
-
+//очистим форму
   newAvatarForm.reset();
 
-  clearValidation(newAvatarForm, {
-    element: ".popup__input",
-    inputErrorClass: "form__input_type_error",
-    errorClass: "form__input-error_active",
-  });
+  clearValidation(newAvatarForm, validationSettings);
 });
 
 // @todo: клик открытия окна создания новой карточки
@@ -136,15 +139,7 @@ profileAddButton.addEventListener("click", function () {
   //очистим форму
   newPlaceForm.reset();
 
-  clearValidation(newPlaceForm, {
-    element: ".popup__input",
-    inputErrorClass: "form__input_type_error",
-    errorClass: "form__input-error_active",
-  });
-
-  //кнопка неактивна
-  buttonPopup.disabled = false;
-  buttonPopup.classList.remove("button_inactive");
+  clearValidation(newPlaceForm, validationSettings);
 });
 
 // @todo: клик закрытия всех окон
@@ -229,11 +224,4 @@ function handleAvatarFormSubmit(evt) {
 newAvatarForm.addEventListener("submit", handleAvatarFormSubmit);
 
 // ВАЛИДАЦИЯ
-enableValidation({
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "button_inactive", 
-  inputErrorClass: "form__input_type_error",
-  errorClass: "form__input-error_active"
-});
+enableValidation(validationSettings);

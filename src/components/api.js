@@ -6,30 +6,25 @@ const config = {
   },
 };
 
+const handleResponse=(res)=>{
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Что-то пошло не так: ${res.status}`);  
+};
+
 //список карточек
 export const getCards = () => {
   return fetch(`${config.baseUrl}/cards`, {
     headers: config.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Что-то пошло не так: ${res.status}`);
-  });
+  }).then(handleResponse);
 };
 
 //информация о профиле
 export const getUserInfo = () => {
   return fetch(`${config.baseUrl}/users/me`, {
     headers: config.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Что-то пошло не так: ${res.status}`);
-  });
+  }).then(handleResponse);
 };
 
 //сохранение профиля
@@ -41,13 +36,7 @@ export const saveUserInfo = (profileTitle, profileDescription) => {
       about: profileDescription,
     }),
     headers: config.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Что-то пошло не так: ${res.status}`);
-  });
+  }).then(handleResponse);
 };
 
 //добавить новую карточку
@@ -59,13 +48,7 @@ export const addNewCard = (placeNameInput, linkInput) => {
       link: linkInput,
     }),
     headers: config.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Что-то пошло не так: ${res.status}`);
-  });
+  }).then(handleResponse);
 };
 
 //удаление карточки
@@ -74,28 +57,22 @@ export const deleteMyCard = (_id) => {
   return fetch(`${config.baseUrl}/cards/${_id}`, {
     method: "DELETE",
     headers: config.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Что-то пошло не так: ${res.status}`);
-  });
+  }).then(handleResponse);
 };
 
 //лайк карточки
-export const putDeleteLikeCard = (typeQuery, _id) => {
-  // напишите код здесь
+export const putDeleteLikeCard = (isActive, _id) => {
+  
+  let typeQuery="PUT";
+
+  if (isActive) {
+    typeQuery="DELETE";
+  }
+
   return fetch(`${config.baseUrl}/cards/likes/${_id}`, {
     method: typeQuery,
     headers: config.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Что-то пошло не так: ${res.status}`);
-  });
+  }).then(handleResponse);
 };
 
 //редактировать аватар
@@ -106,11 +83,5 @@ export const changeAvatar = (link) => {
       avatar: link,
     }),
     headers: config.headers,
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Что-то пошло не так: ${res.status}`);
-  });
+  }).then(handleResponse);
 };

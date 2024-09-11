@@ -57,10 +57,10 @@ const toggleButtonState = (inputList, buttonElement, settings) => {
 const setEventListeners = (formElement, settings) => {
   const inputList = Array.from(
     formElement.querySelectorAll(settings.inputSelector)
-  ); 
+  );
   const buttonElement = formElement.querySelector(
     settings.submitButtonSelector
-  ); 
+  );
 
   toggleButtonState(inputList, buttonElement, settings);
 
@@ -81,13 +81,17 @@ export const enableValidation = (settings) => {
 };
 
 //Очистка валидации
-export const clearValidation=(formElement, settings)=> {
-  const elements = formElement.querySelectorAll(settings.element);
-  elements.forEach((element) => {
-    element.classList.remove(settings.inputErrorClass);
+export const clearValidation = (formElement, settings) => {
+  const buttonElement = formElement.querySelector(
+    settings.submitButtonSelector
+  );
+  buttonElement.disabled = true;
+  if (!buttonElement.classList.contains(settings.inactiveButtonClass)) {    
+    buttonElement.classList.add(settings.inactiveButtonClass);
+  }
 
-    let formError = formElement.querySelector(`.${element.id}-error`);
-    formError.classList.remove(settings.errorClass);
-    formError.textContent = "";
+  const elements = formElement.querySelectorAll(settings.inputSelector);
+  elements.forEach((element) => {
+    hideInputError(formElement,element,settings);
   });
-}
+};
